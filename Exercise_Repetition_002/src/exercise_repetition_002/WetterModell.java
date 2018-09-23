@@ -5,9 +5,14 @@
  */
 package exercise_repetition_002;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.AbstractListModel;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 /**
  *
@@ -35,4 +40,30 @@ public class WetterModell extends AbstractListModel {
         super.fireIntervalAdded(0, list.size(), list.size() - 1);
     }
 
+    public void speichern(File file) throws FileNotFoundException {
+        PrintWriter pw = new PrintWriter(file);
+        for (WetterWert ww : list) {
+            pw.print(ww.getZeitpunkt().format(dtf));
+            pw.print("#");
+            pw.print(ww.getTemperatur());
+            pw.print("#");
+            pw.print(ww.getLuftfeuchtigkeit());
+            pw.println("#");
+        }
+        pw.close();
+    }
+
+    public void laden(File file) throws FileNotFoundException {
+        try (Scanner sc = new Scanner(file)) {
+            while (sc.hasNext()) {
+                String row = sc.nextLine();
+                String[] tokens = row.split("#");
+
+                LocalDateTime zeitpunkt = LocalDateTime.parse(tokens[0], dtf);
+                list.add(new WetterWert(zeitpunkt, Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+                super.fireContentsChanged(this, 0, list.size() - 1);
+            }
+            sc.close();
+        }
+    }
 }

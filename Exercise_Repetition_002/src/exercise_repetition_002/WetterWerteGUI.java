@@ -5,7 +5,13 @@
  */
 package exercise_repetition_002;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -22,6 +28,8 @@ public class WetterWerteGUI extends javax.swing.JFrame {
     public WetterWerteGUI() {
         initComponents();
         wetterListe.setModel(model);
+        slider_lf.setValue(0);
+        slider_tp.setValue(-20);
     }
 
     /**
@@ -44,7 +52,7 @@ public class WetterWerteGUI extends javax.swing.JFrame {
         wetterListe = new javax.swing.JList<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        onSpeichern = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
 
@@ -109,13 +117,13 @@ public class WetterWerteGUI extends javax.swing.JFrame {
 
         jMenu2.setText("Datei");
 
-        jMenuItem1.setText("Speichern");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        onSpeichern.setText("Speichern");
+        onSpeichern.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                onSpeichernActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem1);
+        jMenu2.add(onSpeichern);
 
         jMenuItem2.setText("Laden");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -146,26 +154,47 @@ public class WetterWerteGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_einfActionPerformed
 
     private void onTempChange(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_onTempChange
-
-
+        temp = slider_tp.getValue();
+        lb_tp.setText("Temperatur: " + temp);
     }//GEN-LAST:event_onTempChange
 
     private void onLuftChange(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_onLuftChange
-
+        lf = slider_lf.getValue();
+        lb_lf.setText("Luftfeuchtigkeit: " + lf);
     }//GEN-LAST:event_onLuftChange
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void onSpeichernActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSpeichernActionPerformed
         //speichern
-
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        JFileChooser fc = new JFileChooser(".");
+        fc.setFileFilter(new FileNameExtensionFilter("Textdatei", "txt"));
+        int state = fc.showSaveDialog(null);
+        if (state == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+            try {
+                model.speichern(f);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(WetterWerteGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_onSpeichernActionPerformed
 
     private void onLaden(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onLaden
         //laden
-
+        JFileChooser fc = new JFileChooser(".");
+        fc.setFileFilter(new FileNameExtensionFilter("Textdatei", "txt"));
+        int state = fc.showSaveDialog(null);
+        if (state == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+            try {
+                model.laden(f);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(WetterWerteGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_onLaden
 
     private void onExit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onExit
-
+        this.dispose();
     }//GEN-LAST:event_onExit
 
     /**
@@ -208,7 +237,6 @@ public class WetterWerteGUI extends javax.swing.JFrame {
     private javax.swing.JButton bt_einf;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
@@ -216,6 +244,7 @@ public class WetterWerteGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_lf;
     private javax.swing.JLabel lb_tp;
+    private javax.swing.JMenuItem onSpeichern;
     private javax.swing.JSlider slider_lf;
     private javax.swing.JSlider slider_tp;
     private javax.swing.JList<String> wetterListe;
